@@ -1,3 +1,5 @@
+
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -11,26 +13,16 @@ public class Cell {
     
     int hasFood;
     boolean rocky;
-    boolean occupied;
     boolean redAnthill;
     boolean blackAnthill;
     boolean[] redMarkers;
     boolean[] blackMarkers;
 
-    public Cell(int hasFood, boolean rocky, boolean hasAnt, boolean[] redMarkers, boolean[] blackMarkers) {
+    public Cell(int hasFood, boolean rocky, boolean[] redMarkers, boolean[] blackMarkers) {
         this.hasFood = hasFood;
         this.rocky = rocky;
-        this.occupied = hasAnt;
         this.redMarkers = redMarkers;
         this.blackMarkers = blackMarkers;
-    }    
-    
-    public boolean isOccupied() {
-        return occupied;
-    }
-
-    public void setOccupied(boolean hasOccupied) {
-        this.occupied = hasOccupied;
     }
 
     public int hasFood() {
@@ -147,9 +139,6 @@ public class Cell {
         }
         else if (rocky) {
             s = "#";
-        }
-        else if (occupied) {
-            s = "A";
         }
         else {
             s = ".";

@@ -22,6 +22,13 @@ public class Map {
         newMap();
     }
     
+    public Map (int height, int width, char[][] world) {
+        this.height = height;
+        this.width = width;
+        cells = new Cell[height][width];
+        buildWorld(world);
+    }
+    
     /**
      * 
      * @param p
@@ -41,9 +48,31 @@ public class Map {
         for (int i = 0; i < height; i++){
             for (int j = 0; j < width; j++) {
                 if (i == 0 || j == 0 || i == height-1 || j == width-1) {
-                    cells[i][j] = new Cell(0, true, false, redMarkers, blackMarkers);       //rocky cells around the perimeter
+                    //cells[i][j] = new Cell(0, true, false, redMarkers, blackMarkers);       //rocky cells around the perimeter
                 } else {
-                    cells[i][j] = new Cell(0, false, false, redMarkers, blackMarkers);
+                    //cells[i][j] = new Cell(0, false, false, redMarkers, blackMarkers);
+                }
+            }
+        }
+    }
+    
+    private void buildWorld(char[][] world) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                char current = world[i][j];
+                switch (current) {
+                    case '#':   cells[i][j] = new Cell(0, true, new boolean[6], new boolean[6]);
+                                break;
+                    case '5':   cells[i][j] = new Cell(5, false, new boolean[6], new boolean[6]);
+                                break;
+                    case '.':   cells[i][j] = new Cell(0, false, new boolean[6], new boolean[6]);
+                                break;
+                    case '+':   cells[i][j] = new Cell(0, false, new boolean[6], new boolean[6]);
+                                cells[i][j].setRedAnthill(true);
+                                break;
+                    case '-':   cells[i][j] = new Cell(0, false, new boolean[6], new boolean[6]);
+                                cells[i][j].setBlackAnthill(true);
+                                break;
                 }
             }
         }

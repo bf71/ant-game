@@ -5,6 +5,8 @@
  */
 public class Statistics {
     
+    public String redName;
+    public String blackName;
     public int redAnts;
     public int blackAnts;
     public int redKills;
@@ -16,6 +18,8 @@ public class Statistics {
     public int blackCarryFood;
     
     public Statistics(){
+        redName="";
+        blackName="";
         redAnts=0;
         blackAnts=0;
         redKills=0;
