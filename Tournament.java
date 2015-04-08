@@ -11,24 +11,40 @@ import java.util.HashMap;
 public class Tournament {
 
     private ArrayList<Game> roster;
-    private ArrayList<Map> worlds;
-    private ArrayList<AntBrain> antBrains;
+    private ArrayList<Map> maps;
+    private ArrayList<AntBrain> brains;
     public int gamesPlayed;
     ArrayList<Statistics> stats;
     private HashMap<AntBrain, Integer> scores;
+    TournamentStatsMenu menu;
 
     /**
      * Constructor, initializes variables
      * Also will probably create the GUIs
      */
-    public Tournament() {
+    public Tournament(ArrayList brains, ArrayList maps) {
         scores = new HashMap();
         roster = new ArrayList();
-        worlds = new ArrayList();
-        antBrains = new ArrayList();
+        this.brains = brains;
+        this.maps = maps;
         stats = new ArrayList();
         gamesPlayed = 0;
-        //Create the GUIs here
+        int noPlayers = this.brains.size();
+        
+        loadBrains(this.brains);
+        loadMaps(this.maps);
+        
+        createMatchups();
+        
+        if(noPlayers > 2) {
+            playGames();
+        }
+        else {
+            create1v1Match();
+        }
+        
+        menu = new TournamentStatsMenu(getScores());
+        
     }
     /**
      * loads maps into the tournament. 
@@ -37,7 +53,7 @@ public class Tournament {
      */
     public void loadMaps(ArrayList<Map> maps) {
         for (Map m : maps) {
-            worlds.add(m);
+            maps.add(m);
         }
     }
 
@@ -47,7 +63,7 @@ public class Tournament {
      */
     public void loadBrains(ArrayList<AntBrain> brain) {
         for (AntBrain i : brain) {
-            antBrains.add(i);
+            brains.add(i);
         }
     }
 
@@ -58,10 +74,10 @@ public class Tournament {
      */
     public void createMatchups() {
         //If not enough maps generate more
-        for (AntBrain i : antBrains) {
-            for (AntBrain j : antBrains) {
+        for (AntBrain i : brains) {
+            for (AntBrain j : brains) {
                 if (!(i.equals(j))) {
-                    for (Map m : worlds) {
+                    for (Map m : maps) {
                         Game g = new Game(m, i, j);
                         roster.add(g);
                     }
@@ -73,7 +89,7 @@ public class Tournament {
      * Creates a single game between the first two brains and the first map and add it to the roster
      */
     public void create1v1Match(){
-        roster.add(new Game(worlds.get(0), antBrains.get(0), antBrains.get(1)));
+        roster.add(new Game(maps.get(0), brains.get(0), brains.get(1)));
     }
 
     /**
@@ -93,6 +109,10 @@ public class Tournament {
                 buttonPressed = gsm.getBP();
             }
         }
+    }
+    
+    public HashMap<AntBrain, Integer> getScores() {
+        return scores;
     }
     
 //    /**

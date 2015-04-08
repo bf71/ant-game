@@ -14,7 +14,8 @@ import javax.swing.*;
 public class Menu {
     private JFrame frame;
     private UploadMenu uploadMenu;
-    private GamePackage pck = new GamePackage();
+//    private GamePackage pck = new GamePackage();
+    private boolean menuFinished = false;
     
     /**
      * Constructor for initial menu
@@ -23,11 +24,11 @@ public class Menu {
         runMainMenu();
     }
     
-    public GamePackage getGamePackage() {
-        pck.brainList = uploadMenu.getBrainList();
-        pck.worldList = uploadMenu.getMapMenu().getMapList();
-        return pck;
-    }
+//    public GamePackage getGamePackage() {
+//        pck.brainList = uploadMenu.getBrainList();
+//        pck.worldList = uploadMenu.getMapMenu().getMapList();
+//        return pck;
+//    }
     
     private void runMainMenu() {
         //Setup frame and divisons
@@ -94,7 +95,7 @@ public class Menu {
                     if (noPlayers > 2) {
                         System.out.println("Creating tournament with " + noPlayers + " players!");
                         frame.dispose();
-                            new UploadMenu(noPlayers);
+                        uploadMenu = new UploadMenu(noPlayers);
                     }
                     else {
                         JOptionPane.showMessageDialog( null, "Please enter a number greater than 2", 
@@ -246,7 +247,7 @@ class UploadMenu {
             public void actionPerformed(ActionEvent ae) {
                 if(brainCount == no_Players) {
                     frame.dispose();
-                    mapMenu = new UploadMapMenu(no_Players);
+                    mapMenu = new UploadMapMenu(no_Players, brainList);
                 }
                 else {
                     JOptionPane.showMessageDialog( null, "Please upload the correct number of ant brains: " + no_Players, 
@@ -264,13 +265,13 @@ class UploadMenu {
         frame.setVisible(true);
     }
     
-    public ArrayList getBrainList() {
-        return brainList;
-    }
-    
-    public UploadMapMenu getMapMenu() {
-        return mapMenu;
-    }
+//    public ArrayList getBrainList() {
+//        return brainList;
+//    }
+//    
+//    public UploadMapMenu getMapMenu() {
+//        return mapMenu;
+//    }
 }
 
 class UploadMapMenu {
@@ -283,7 +284,7 @@ class UploadMapMenu {
             cont = new JButton("Continue");
     private int mapCount = 0;
 
-    public UploadMapMenu(int noPlayers) {
+    public UploadMapMenu(int noPlayers, final ArrayList brains) {
         final int mapsRequired = noPlayers;
         //Setup frame and divisons
         frame = new JFrame("The Ant Game: Upload Maps");
@@ -387,7 +388,8 @@ class UploadMapMenu {
                 if(mapCount == mapsRequired) {
                     //start the game using the parameters
                     frame.dispose();
-                    System.out.println("Call the getters from each menu");
+                    System.out.println("Menu Finished... Starting Game.");
+                    Tournament t = new Tournament(brains, mapList);
                 }
                 else if(mapCount < mapsRequired) {
                     JOptionPane.showMessageDialog( null, "Not enough maps have been uploaded, "
@@ -411,15 +413,15 @@ class UploadMapMenu {
         frame.setVisible(true);
     }
     
-    public ArrayList getMapList() {
-        return mapList;
-    }
+//    public ArrayList getMapList() {
+//        return mapList;
+//    }
 }
 
-class GamePackage {
-    ArrayList brainList = new ArrayList();
-    ArrayList worldList = new ArrayList();
-    
+//class GamePackage {
+//    ArrayList brainList = new ArrayList();
+//    ArrayList worldList = new ArrayList();
+//    
 //    public void addBrain(AntBrain brain) {
 //        brainList.add(brain);
 //    }
@@ -427,4 +429,4 @@ class GamePackage {
 //    public void addMap(Map map) {
 //        worldList.add(map);
 //    }
-}
+//}
