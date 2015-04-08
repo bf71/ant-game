@@ -1,4 +1,3 @@
-
 /**
  *
  * @author Zachary Hoad
@@ -49,6 +48,16 @@ class Sense extends Instruction{
         this.st1=st1;
         this.st2=st2;
         this.cond=cond;
+    }
+    
+    public Sense(Direction sensedir, int st1, int st2, Condition cond, int markernum){
+        this.sensedir=sensedir;
+        this.st1=st1;
+        this.st2=st2;
+        this.cond=cond;
+        if (cond==Condition.MARKER){
+            this.cond.markerNum=markernum;
+        }
     }
 }
 

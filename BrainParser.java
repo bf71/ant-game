@@ -192,7 +192,6 @@ public class BrainParser {
                 cond = s;
                 cond.trim();
                 
-                System.out.print(cond);
                 
                 charCount = 0;
                 
@@ -216,7 +215,7 @@ public class BrainParser {
                
                     
                     
-                 Sense sen = new Sense(Direction.valueOf(direction.toUpperCase()), state = Integer.parseInt(state1), state = Integer.parseInt(state2), Condition.MARKER);
+                 Sense sen = new Sense(Direction.valueOf(direction.toUpperCase()), state = Integer.parseInt(state1), state = Integer.parseInt(state2), Condition.MARKER, Integer.parseInt(marker));
                 
                  InstructionList.add(sen);
                 
