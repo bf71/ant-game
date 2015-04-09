@@ -148,10 +148,16 @@ public class Game {
     } 
     
     public Statistics runGame() {
-        display.initDisplay(map);
+        display = new AntWorldPanel(map);
+        //display.initDisplay(map);
         for(int i = 0; i < 30000; i++) {
             nextTurn();
             display.repaint();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         display.disposeFrame();
         return statistics;
@@ -378,6 +384,11 @@ public class Game {
      * @return True if there is an anthill of that colour at that point, false otherwise
      */
     private boolean anthillAt(Point p, Colour c){
+        //System.out.println(p);
+        if(p.x==11&&p.y==71){
+            map.printMap();
+            System.out.println(map.getCell(p));
+        }
         return map.getCell(p).getAnthill(c);
     }
 

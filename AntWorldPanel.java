@@ -25,6 +25,9 @@ public class AntWorldPanel extends JPanel {
     static final int hexRadius = 8;
     //static final int offset = 7;
     
+    AntWorldPanel (Map map) {
+        initDisplay(map);
+    }
     
     
     @Override
@@ -59,35 +62,35 @@ public class AntWorldPanel extends JPanel {
                 for (int pt = 0; pt < 6; pt++){
                     hex.addPoint((int)(xStart + offset + (spacing * j) + hexRadius * Math.sin(pt * 2 * Math.PI / 6)), (int)(yStart+ (spacing * i) +hexRadius * Math.cos(pt*2*Math.PI/6)));
                     }
-//                
-//                    if (map.getCell(i, j).isRocky()) {
-//                        g.setColor(Color.BLACK);
-//                    }
-//                    else if (map.getCell(i, j).getRedAnthill()){
-//                        g.setColor(Color.RED);
-//                    }
-//                    else if (map.getCell(i,j).getBlackAnthill()) {
-//                        g.setColor(Color.DARK_GRAY);
-//                    }
-//                    else if (map.getCell(i,j).hasFood() > 0) {
-//
-//                        g.setColor(Color.YELLOW);
-//                    }
-//                    else
-//                        g.setColor(Color.gray);
-//
-//                    g.fillPolygon(hex);
-//                    setLineThickness(g, 2);
-//                    g.setColor(Color.black);
-//                    g.drawPolygon(hex);
-//                    if (map.getCell(i,j).hasFood() > 0) {
-//                        String s = "";
-//                        s += map.getCell(i,j).hasFood();
-//                        //s+= "Fug";
-//                            g.setColor(Color.BLUE);
-//                            g.drawString(s, (int) (xStart + offset +(spacing * j) - 4), (int) (yStart+ (spacing * i) + hexRadius - 3) );
-//                    }
-//                    
+                
+                    if (map.getCell(i, j).isRocky()) {
+                        g.setColor(Color.BLACK);
+                    }
+                    else if (map.getCell(i, j).getRedAnthill()){
+                        g.setColor(Color.RED);
+                    }
+                    else if (map.getCell(i,j).getBlackAnthill()) {
+                        g.setColor(Color.DARK_GRAY);
+                    }
+                    else if (map.getCell(i,j).hasFood() > 0) {
+
+                        g.setColor(Color.YELLOW);
+                    }
+                    else
+                        g.setColor(Color.gray);
+
+                    g.fillPolygon(hex);
+                    setLineThickness(g, 2);
+                    g.setColor(Color.black);
+                    g.drawPolygon(hex);
+                    if (map.getCell(i,j).hasFood() > 0) {
+                        String s = "";
+                        s += map.getCell(i,j).hasFood();
+                        //s+= "Fug";
+                            g.setColor(Color.BLUE);
+                            g.drawString(s, (int) (xStart + offset +(spacing * j) - 4), (int) (yStart+ (spacing * i) + hexRadius - 3) );
+                    }
+                    
                     /*
                     for (Ant a : ants) {
                         if (a.getPosition() == new Point (i , j)) {
@@ -179,16 +182,21 @@ public class AntWorldPanel extends JPanel {
     public void disposeFrame() {
         frame.dispose();
     }
-    
+        
     public void initDisplay(Map map) {
-        setMap(map);
+        System.out.println("yij");
+        //map.printMap();
+        this.setMap(map);
+        this.map.printMap();
+        
         frame = new JFrame();
-        JScrollPane scroll = new JScrollPane();
-        AntWorldPanel drawPanel = new AntWorldPanel();
+        //JScrollPane scroll = new JScrollPane();
+        //AntWorldPanel drawPanel = new AntWorldPanel();
         
-        drawPanel.getAnts(ants);
+        //drawPanel.getAnts(ants);
+        //drawPanel.setMap(map);
         
-        //drawPanel.repaint();
+        //this.repaint();
         
         /*
         for (Ant a : ants) {
@@ -197,28 +205,33 @@ public class AntWorldPanel extends JPanel {
         * 
         */
         
-        drawPanel.setPreferredSize(new Dimension(1965, 1965));
-        drawPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        this.setPreferredSize(new Dimension(1965, 1965));
+        this.setBorder(BorderFactory.createLineBorder(Color.RED));
         
-        scroll.setPreferredSize(new Dimension(1024,768));
+        //scroll.setPreferredSize(new Dimension(1024,768));
         
-        scroll.setViewportView(drawPanel);
-        scroll.getVerticalScrollBar().setUnitIncrement(50);
+        //scroll.setViewportView(this);
+        //scroll.getVerticalScrollBar().setUnitIncrement(50);
         
         Container contentPane = frame.getContentPane();
         
 
         frame.setTitle("Ant World Display");
-        frame.setSize(1920,1080);
+        
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
+        
+        contentPane.add(this);
+        //contentPane.add(scroll);
 
-        contentPane.add(scroll);
-
-        frame.show();
+        repaint();
+        
+        frame.setSize(1920,1080);
+        //frame.pack();
+        frame.setVisible(true);
     }
     
     public void updateDisplay() {
@@ -245,11 +258,11 @@ public class AntWorldPanel extends JPanel {
 
         JFrame frame = new JFrame();
         JScrollPane scroll = new JScrollPane();
-        AntWorldPanel drawPanel = new AntWorldPanel();
+        AntWorldPanel drawPanel = new AntWorldPanel(map);
         
         drawPanel.getAnts(ants);
         
-        drawPanel.repaint();
+        //drawPanel.repaint();
         
         /*
         for (Ant a : ants) {

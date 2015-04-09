@@ -14,6 +14,7 @@ public class AntWorldParser {
     BufferedReader r;
     String directory;
     char[][] map;
+    char[][] originalMap;
     
     /**
      * Constructor for the Ant World Parser
@@ -140,6 +141,20 @@ public class AntWorldParser {
                 map[i][j] = row.charAt(j);
             }
         }
+        originalMap = new char[150][150];
+        
+        for (int i = 0; i < 150; i++) {
+            for (int j = 0; j < 150; j++) {
+                originalMap[i][j] = map[i][j];
+            }
+        }
+//        for (int i = 0; i < 150; i++) {
+//                for (int j = 0; j < 150; j++) {
+//                    System.out.print(originalMap[i][j] + " ");
+//                }
+//                System.out.println("");
+//                if(i%2 == 0) { System.out.print(" "); }
+//        }
     }
     
     /**
@@ -147,7 +162,7 @@ public class AntWorldParser {
      * @return Map object of parsed map
      */
     public Map makeMap() {
-        return new Map(150,150,map);
+        return new Map(150,150,originalMap);
     }
     
     /**

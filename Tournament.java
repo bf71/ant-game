@@ -31,8 +31,8 @@ public class Tournament {
         gamesPlayed = 0;
         int noPlayers = this.brains.size();
         
-        loadBrains(this.brains);
-        loadMaps(this.maps);
+        //loadBrains(this.brains);
+        //loadMaps(this.maps);
         
         createMatchups();
         
@@ -41,6 +41,7 @@ public class Tournament {
         }
         else {
             create1v1Match();
+            playGames();
         }
         
         menu = new TournamentStatsMenu(getScores());
@@ -51,8 +52,8 @@ public class Tournament {
      * @param maps The maps to load
      * 
      */
-    public void loadMaps(ArrayList<Map> maps) {
-        for (Map m : maps) {
+    public void loadMaps(ArrayList<Map> mapList) {
+        for (Map m : mapList) {
             maps.add(m);
         }
     }
@@ -61,8 +62,8 @@ public class Tournament {
      * @param brain The brains to load
      *  loads antBrains into the tournament
      */
-    public void loadBrains(ArrayList<AntBrain> brain) {
-        for (AntBrain i : brain) {
+    public void loadBrains(ArrayList<AntBrain> brainList) {
+        for (AntBrain i : brainList) {
             brains.add(i);
         }
     }
@@ -83,6 +84,7 @@ public class Tournament {
                     }
                 }
             }
+            scores.put(i, 0);
         }
     }
     /**
@@ -138,9 +140,11 @@ public class Tournament {
         Statistics gameStats = game.getStatistics();
         if (gameStats.redHillFood>gameStats.blackHillFood){
             scores.put(game.getRedBrain(), scores.get(game.getRedBrain())+2 );
+            //addScore(scores, game.getRedBrain(), 2);
         }
         else if (gameStats.blackHillFood>gameStats.redHillFood){
             scores.put(game.getBlackBrain(), scores.get(game.getBlackBrain())+2 );
+            //addScore(scores, game.getBlackBrain(), 2);
         }
         else {
             scores.put(game.getRedBrain(), scores.get(game.getRedBrain())+1 );
@@ -149,21 +153,21 @@ public class Tournament {
     }
     
     
-//    /**
-//     * Adds a score to the hashmap, internal method
-//     * @param scores The hashmap
-//     * @param name The name of the brain to add a score for
-//     * @param score The score to add
-//     */
-//    private void addScore(HashMap<String, Integer> scores, String name, int score){
-//        if (scores.containsKey(name)){
-//            score=score+scores.get(name);
-//            scores.put(name, score);
-//        } else {
-//            scores.put(name, score);
-//        }
-//        
-//    }
+    /**
+     * Adds a score to the hashmap, internal method
+     * @param scores The hashmap
+     * @param name The name of the brain to add a score for
+     * @param score The score to add
+     */
+    private void addScore(HashMap<AntBrain, Integer> scores, AntBrain ab, int score){
+        if (scores.containsKey(ab)){
+            score=score+scores.get(ab);
+            scores.put(ab, score);
+        } else {
+            scores.put(ab, score);
+        }
+        
+    }
 
     /**
      * Display the statistics for the game, for debugging

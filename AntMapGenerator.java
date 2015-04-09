@@ -36,7 +36,7 @@ public class AntMapGenerator {
         AntMapGenerator a = new AntMapGenerator(150, 150);
         
         
-        a.getCell(0, 5).setRocky(true);
+        //a.getCell(0, 5).setRocky(true);
         
         Point p = new Point (0,5);
         if (a.rocky(p)){
