@@ -285,7 +285,12 @@ class UploadMapMenu {
     private int mapCount = 0;
 
     public UploadMapMenu(int noPlayers, final ArrayList brains) {
-        final int mapsRequired = noPlayers;
+        final int mapsRequired;
+        if(noPlayers == 2) {
+            mapsRequired = 1;
+        } else {
+            mapsRequired = noPlayers;
+        }
         //Setup frame and divisons
         frame = new JFrame("The Ant Game: Upload Maps");
         Container contentPane = frame.getContentPane();
