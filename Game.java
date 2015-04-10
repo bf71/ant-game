@@ -167,7 +167,7 @@ public class Game {
      * Runs step function for every ant, each ant advances one state (unless it is resting)
      */
     public void nextTurn(){
-        for (int i=0; i<254; i++){
+        for (int i=0; i<ants.size(); i++){
             step(i);
         }
     }
@@ -205,7 +205,7 @@ public class Game {
 //          }
 //        }.start();
         
-        for(int i = 0; i < 150; i++) {
+        for(int i = 0; i < 300000; i++) {
             nextTurn();
 
             //display.repaint();
@@ -328,11 +328,11 @@ public class Game {
                     if (rocky(newp)||someAntIsAt(newp)){
                         setState(a, m.st2);
                     } else {
-                        clearAntAt(point);
+                        //clearAntAt(point, a);
                         setAntAt(newp, a);
                         setState(a, m.st1);
                         setResting(a, 14);
-                        checkForSurroundedAnts(newp);
+                        checkForSurroundedAnts(newp, a);
                     }
                 }
                 if (i instanceof Flip){
@@ -344,6 +344,8 @@ public class Game {
                     }
                 }
             }
+        } else {
+            ants.remove(ants.get(id));
         }
     }
     
@@ -546,16 +548,20 @@ public class Game {
             return rocky(p);
         }
         if(cond==Condition.FRIEND){
-            return ((someAntIsAt(p))&&(colour(antAt(p))==c));
+            Ant a=antAt(p);
+            return(a!=null&&colour(a)==c);
         }
         if(cond==Condition.FOE){
-            return ((someAntIsAt(p))&&(colour(antAt(p))!=c));
+            Ant a=antAt(p);
+            return(a!=null&&colour(a)!=c);
         }
         if(cond==Condition.FRIENDWITHFOOD){
-            return ((someAntIsAt(p))&&(colour(antAt(p))==c)&&(hasFood(antAt(p))));
+            Ant a=antAt(p);
+            return(a!=null&&colour(a)==c&&hasFood(a));
         }
         if(cond==Condition.FOEWITHFOOD){
-            return ((someAntIsAt(p))&&(colour(antAt(p))!=c)&&(hasFood(antAt(p))));
+            Ant a=antAt(p);
+            return(a!=null&&colour(a)!=c&&hasFood(a));
         }
         if(cond==Condition.FOOD){
             return foodAt(p)>0;
@@ -610,7 +616,8 @@ public class Game {
         int n=0;
         for (int d=0; d<=5; d++){
             Point cell=adjacentCell(p, d);
-            if (someAntIsAt(cell)&&colour(antAt(cell))==c){
+            Ant a=antAt(cell);
+            if (a!=null&&colour(a)==c){
                 n++;
             }
         }
@@ -623,11 +630,21 @@ public class Game {
      * Mostly supplied as pseudocode
      * @param p The point to check
      */
-    private void checkForSurroundedAntAt(Point p){
-        if (someAntIsAt(p)){
-            Ant a = antAt(p);
+    private void checkForSurroundedAntAt(Point p, Ant a){
+        if (a.getPosition().equals(p)){
+            //Ant a = antAt(p);
             if (adjacentAnts(p, otherColour(colour(a)))>=5){
-                killAntAt(p);
+                killAntAt(p, a);
+            }
+        }
+    }
+    
+    private void checkForSurroundedAntAt(Point p){
+        Ant a=antAt(p);
+        if (a!=null&&a.getPosition().equals(p)){
+            //Ant a = antAt(p);
+            if (adjacentAnts(p, otherColour(colour(a)))>=5){
+                killAntAt(p, a);
             }
         }
     }
@@ -637,8 +654,8 @@ public class Game {
      * Mostly supplied as pseudocode
      * @param p The cell
      */
-    private void checkForSurroundedAnts(Point p){
-        checkForSurroundedAntAt(p);
+    private void checkForSurroundedAnts(Point p, Ant a){
+        checkForSurroundedAntAt(p, a);
         for (int d=0; d<=5; d++){
             checkForSurroundedAntAt(adjacentCell(p, d));
         }
@@ -833,8 +850,8 @@ public class Game {
      * Mostly supplied as pseudocode
      * @param p The positions
      */
-    private void clearAntAt(Point p){
-        antAt(p).setPosition(null);
+    private void clearAntAt(Point p, Ant a){
+        a.setPosition(null);
     }
     
     /**
@@ -865,8 +882,8 @@ public class Game {
      * Mostly supplied as pseudocode
      * @param p The point
      */
-    private void killAntAt(Point p){
-        Ant a=antAt(p);
+    private void killAntAt(Point p, Ant a){
+        //Ant a=antAt(p);
         if(a.has_food()){
             setHasFood(a, false);
             setFoodAt(p, foodAt(p)+1);
@@ -885,7 +902,7 @@ public class Game {
             statistics.redHillFood+=3;
         }
         a.setPosition(new Point(-1, -1));
-        if(colour(antAt(p))==Colour.BLACK){
+        if(colour(a)==Colour.BLACK){
             statistics.blackAnts--;
             statistics.redKills++;
         } else {
