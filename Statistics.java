@@ -30,4 +30,19 @@ public class Statistics {
         redCarryFood=0;
         blackCarryFood=0;
     }
+    
+    public void printStats() {
+        System.out.println("redName: " + redName);
+        System.out.println("blackName: " + blackName);
+        System.out.println("redAnts: " + redAnts);
+        System.out.println("blackAnts: " + blackAnts);
+        System.out.println("redKills: " + redKills);
+        System.out.println("blackKills: " + blackKills);
+        System.out.println("redHillFood: " + redHillFood);
+        System.out.println("blackHillFood: " + blackHillFood);
+        System.out.println("mapFood: " + mapFood);
+        System.out.println("redCarryFood: " + redCarryFood);
+        System.out.println("blackCarryFood: " + blackCarryFood);
+        
+    }
 }
