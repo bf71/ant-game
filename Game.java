@@ -205,7 +205,7 @@ public class Game {
 //          }
 //        }.start();
         
-        for(int i = 0; i < 300000; i++) {
+        for(int i = 0; i < 300/*000*/; i++) {
             nextTurn();
 
             //display.repaint();
@@ -328,7 +328,7 @@ public class Game {
                     if (rocky(newp)||someAntIsAt(newp)){
                         setState(a, m.st2);
                     } else {
-                        //clearAntAt(point, a);
+                        clearAntAt(point, a);
                         setAntAt(newp, a);
                         setState(a, m.st1);
                         setResting(a, 14);
@@ -812,12 +812,7 @@ public class Game {
         if (p.x<0||p.x>=map.height||p.y<0||p.y>=map.width){
             return false;
         }
-        for (Ant a:ants){
-            if (a.getPosition()==p){
-                return true;
-            }
-        }
-        return false;
+        return(antAt(p)!=null);
     }
     
     /**
@@ -827,12 +822,13 @@ public class Game {
      * @return The ant there
      */
     private Ant antAt(Point p){
-        for (Ant a:ants){
-            if (a.getPosition()==p){
-                return a;
-            }
-        }
-        return null;
+//        for (Ant a:ants){
+//            if (a.getPosition()==p){
+//                return a;
+//            }
+//        }
+//        return null;
+        return map.getCell(p).getAnt();
     }
     
     /**
@@ -843,6 +839,7 @@ public class Game {
      */
     private void setAntAt(Point p, Ant a){
         a.setPosition(p);
+        map.getCell(p).setAnt(a);
     }
     
     /**
@@ -851,7 +848,8 @@ public class Game {
      * @param p The positions
      */
     private void clearAntAt(Point p, Ant a){
-        a.setPosition(null);
+        a.setPosition(new Point(-1, -1));
+        map.getCell(p).setAnt(null);
     }
     
     /**
@@ -901,7 +899,7 @@ public class Game {
         } else {
             statistics.redHillFood+=3;
         }
-        a.setPosition(new Point(-1, -1));
+        //a.setPosition(new Point(-1, -1));
         if(colour(a)==Colour.BLACK){
             statistics.blackAnts--;
             statistics.redKills++;
@@ -909,6 +907,7 @@ public class Game {
             statistics.redAnts--;
             statistics.blackKills++;
         }
+        clearAntAt(p, a);
     }
     
     
