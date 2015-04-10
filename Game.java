@@ -1,5 +1,8 @@
 
-import java.awt.Point;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -12,13 +15,14 @@ import java.util.logging.Logger;
  */
 public class Game {
     
-    private Map map;
+    private static Map map;
     private Map cleanMap;
     private ArrayList<Ant> ants;
     private AntBrain redBrain;
     private AntBrain blackBrain;
     private Statistics statistics;
     private AntWorldPanel display;
+    private JFrame frame;
     
     
     /**
@@ -30,6 +34,7 @@ public class Game {
     public Game(Map map, AntBrain redBrain, AntBrain blackBrain){
         this.map=map;
         cleanMap=map;
+        frame = new JFrame("Map");
         this.redBrain=redBrain;
         this.blackBrain=blackBrain;
         statistics=new Statistics();
@@ -42,6 +47,22 @@ public class Game {
         statistics.blackName=blackBrain.name;
         
         ants=new ArrayList();
+        
+        for (Ant a: ants) {
+
+            for (int i = 0; i < 150; i++) {
+                for (int j = 0; j < 150; j++) {
+                    Point p = new Point (i, j);
+                    if (anthillAt(p, Colour.RED) && !someAntIsAt(p) && a.getColor().equals(Colour.RED)) {
+                        setAntAt(p, a);
+                    }
+                    else if (anthillAt(p, Colour.BLACK) && someAntIsAt(p) && a.getColor().equals(Colour.RED)) {
+                        setAntAt(p, a);
+                    }
+                }
+            }
+
+        }
         
         int h=0;
         do{
@@ -130,6 +151,10 @@ public class Game {
         return map;
     }
     
+    public Game getGame() {
+        return this;
+    }
+    
     /**
      * Returns an array list of the ants
      * @return the ants
@@ -145,22 +170,87 @@ public class Game {
         for (int i=0; i<254; i++){
             step(i);
         }
-    } 
+    }
     
-    public Statistics runGame() {
-        display = new AntWorldPanel(map);
+    public void disposeFrame() {
+        frame.dispose();
+    }   
+    
+    public void runGame() {
+//        frame = new JFrame("Wurld Star");
+//        Container contentPane = frame.getContentPane();
+//        contentPane.setLayout(new BorderLayout());
+//        //JPanel p = new JPanel();
+//        JLabel b = new JLabel("label");
+//        //p.add(b);
+//        contentPane.add(b, BorderLayout.NORTH);
+//        contentPane.setVisible(true);
+//        frame.setSize(new Dimension(900,650));
+//        frame.pack();
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setVisible(true);
+        //contentPane.add(p);
+        
+        //wd = new WorldDisplay();
+        //display = new AntWorldPanel(map);
         //display.initDisplay(map);
-        for(int i = 0; i < 30000; i++) {
+        
+        //display = new AntWorldPanel(map);
+        //display.initDisplay(map);
+        //labelFrame();
+        //displayMap(map);
+//        new Thread() {
+//          public void run() {
+//            displayMap(map);
+//          }
+//        }.start();
+        
+        for(int i = 0; i < 150; i++) {
             nextTurn();
-            display.repaint();
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-            }
+
+            //display.repaint();
+            System.out.println("turn " + i);
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }
-        display.disposeFrame();
-        return statistics;
+        disposeFrame();
+        
+        //display.repaint();
+
+        //return statistics;
+    }
+    
+    public void displayMap(Map m) {
+        Container c = frame.getContentPane();
+        display = new AntWorldPanel(map, ants);
+        display.setPreferredSize(new Dimension(1965, 1965));
+        display.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        
+        JScrollPane scroll = new JScrollPane();
+        scroll.setPreferredSize(new Dimension(1920,1080));
+        scroll.setViewportView(display);
+        scroll.getVerticalScrollBar().setUnitIncrement(50);
+        
+        c.add(scroll);
+        
+        frame.setSize(1920,1080);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
+    
+    public void labelFrame() {
+        frame = new JFrame("frames");
+        Container contentPane = frame.getContentPane();
+        JLabel l = new JLabel("this is a lable");
+        contentPane.add(l);
+        frame.setLocationByPlatform(true);
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
     }
 
     /**
