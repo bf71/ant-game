@@ -3,8 +3,11 @@
 //import Antmapgenerator.Map;
 //import Game.Game;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -12,23 +15,41 @@ import javax.swing.*;
  *
  * @author ec263
  */
-public class AntWorldPanel extends JPanel {
+public class AntWorldPanel extends JPanel implements ActionListener{
     
     
     private JFrame frame;
     //FontMetrics metrics;
     static Map map;
-    Ant[] ants;
+    ArrayList<Ant> ants;
     static final int xStart = 10;
     static final int yStart = 10;
     static final double spacing = 13;
     static final int hexRadius = 8;
+    private Game g;
     //static final int offset = 7;
     
-    AntWorldPanel (Map map) {
-        initDisplay(map);
+    Timer timer = new Timer(50, this);
+    
+    AntWorldPanel(Map m, ArrayList<Ant> ants) {
+        timer.start();
+        map= m;
+        this.ants = ants;
+        initDisplay(map, ants);
     }
     
+    AntWorldPanel (Game g) {
+        this.g = g;
+        map = g.getMap();
+        ants = g.getAnts();
+        initDisplay(map, ants);
+    }
+    
+    public void actionPerformed(ActionEvent ev) {
+        if (ev.getSource()==timer){
+            repaint();
+        }
+    }
     
     @Override
     public void paintComponent(Graphics g) {
@@ -142,7 +163,7 @@ public class AntWorldPanel extends JPanel {
                 
                 String s = "+";
                 if (a.getColor() == Game.Colour.RED) {
-                    g.setColor(Color.RED);
+                    g.setColor(Color.MAGENTA);
                     //s += "+";
                 }
                 else {
@@ -156,15 +177,16 @@ public class AntWorldPanel extends JPanel {
 
             }
         }
-        
-        
-        
-
     }
  
   public static void setLineThickness(Graphics page, int thickness) {
     if (thickness < 0) thickness = 0;
     ((Graphics2D)page).setStroke(new BasicStroke(thickness));
+  }
+  
+  public void nextTurn() {
+      g.nextTurn();
+      repaint();
   }
   
   public void updateMap() {
@@ -175,7 +197,7 @@ public class AntWorldPanel extends JPanel {
         this.map = map;
     }
     
-    public void getAnts(Ant[] ants) {
+    public void getAnts(ArrayList<Ant> ants) {
         this.ants = ants;
     }
     
@@ -183,55 +205,82 @@ public class AntWorldPanel extends JPanel {
         frame.dispose();
     }
         
-    public void initDisplay(Map map) {
+    public void initDisplay(Map map, ArrayList<Ant> ants) {
+        repaint();
         System.out.println("yij");
         //map.printMap();
         this.setMap(map);
+        this.getAnts(ants);
         this.map.printMap();
         
-        frame = new JFrame();
-        //JScrollPane scroll = new JScrollPane();
-        //AntWorldPanel drawPanel = new AntWorldPanel();
+//        AntWorldPanel p = this;
+//        this.setPreferredSize(new Dimension(1965, 1965));
+//        
+//        JScrollPane scroll = new JScrollPane();
+//        
+//        scroll.setPreferredSize(new Dimension(1024,768));
+//        
+//        scroll.setViewportView(this);
+//        scroll.getVerticalScrollBar().setUnitIncrement(50);
+//        
+//        
+//        frame = new JFrame();
+//        frame.setSize(1000,1000);
+//        frame.getContentPane().add(scroll);
+//        frame.pack();
+//        frame.setVisible(true);
         
-        //drawPanel.getAnts(ants);
-        //drawPanel.setMap(map);
+//        
+//        AntWorldPanel p = this;
+//        JLabel b = new JLabel("button");
+//        
+//        frame = new JFrame();
+//        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//        frame.getContentPane().add(b);
+//        frame.pack();
+//        frame.setVisible(true);
+//        //JScrollPane scroll = new JScrollPane();
+//        //AntWorldPanel drawPanel = new AntWorldPanel();
+//        
+//        //drawPanel.getAnts(ants);
+//        //drawPanel.setMap(map);
+//        
+//        //this.repaint();
+//        
+//        /*
+//        for (Ant a : ants) {
+//            System.out.println(a.getPosition());
+//        }
+//        * 
+//        */
+//        
+//        //this.setPreferredSize(new Dimension(1965, 1965));
+//        //this.setBorder(BorderFactory.createLineBorder(Color.RED));
+//        
+//        //scroll.setPreferredSize(new Dimension(1024,768));
+//        
+//        //scroll.setViewportView(this);
+//        //scroll.getVerticalScrollBar().setUnitIncrement(50);
+//        
+//        //Container contentPane = frame.getContentPane();
+//        
+//
+//        frame.setTitle("Ant World Display");
+//        
+//        frame.addWindowListener(new WindowAdapter() {
+//            public void windowClosing(WindowEvent e) {
+//                System.exit(0);
+//            }
+//        });
         
-        //this.repaint();
-        
-        /*
-        for (Ant a : ants) {
-            System.out.println(a.getPosition());
-        }
-        * 
-        */
-        
-        this.setPreferredSize(new Dimension(1965, 1965));
-        this.setBorder(BorderFactory.createLineBorder(Color.RED));
-        
-        //scroll.setPreferredSize(new Dimension(1024,768));
-        
-        //scroll.setViewportView(this);
-        //scroll.getVerticalScrollBar().setUnitIncrement(50);
-        
-        Container contentPane = frame.getContentPane();
-        
-
-        frame.setTitle("Ant World Display");
-        
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
-        
-        contentPane.add(this);
+        //contentPane.add(this);
         //contentPane.add(scroll);
 
         repaint();
         
-        frame.setSize(1920,1080);
+        //frame.setSize(1920,1080);
         //frame.pack();
-        frame.setVisible(true);
+        //frame.setVisible(true);
     }
     
     public void updateDisplay() {
@@ -242,11 +291,11 @@ public class AntWorldPanel extends JPanel {
     public static void main(String[] args) throws Exception {
         
         AntMapGenerator amg = new AntMapGenerator(150,150);
-        Ant[] ants = new Ant[4];
-        ants[0] = new Ant(Game.Colour.RED, 11, 11, 0, true , new Point(3, 5)); 
-        ants[1] = new Ant(Game.Colour.BLACK, 11, 11, 0, true , new Point(5, 5));
-        ants[2] = new Ant(Game.Colour.RED, 11, 11, 0, true , new Point(6, 5));
-        ants[3] = new Ant(Game.Colour.BLACK, 11, 11, 0, true , new Point(6, 6));
+        ArrayList<Ant> ants = new ArrayList<>();
+        ants.add(new Ant(Game.Colour.RED, 11, 11, 0, true , new Point(3, 5))); 
+        ants.add(new Ant(Game.Colour.BLACK, 11, 11, 0, true , new Point(5, 5)));
+        ants.add(new Ant(Game.Colour.RED, 11, 11, 0, true , new Point(6, 5)));
+        ants.add(new Ant(Game.Colour.BLACK, 11, 11, 0, true , new Point(6, 6)));
         
         
         //ntWorldPanel awp = new AntWorldPanel();
@@ -255,10 +304,12 @@ public class AntWorldPanel extends JPanel {
         amg.generateMap();
         map = amg.getMap();
         
+        
+        
 
         JFrame frame = new JFrame();
         JScrollPane scroll = new JScrollPane();
-        AntWorldPanel drawPanel = new AntWorldPanel(map);
+        AntWorldPanel drawPanel = new AntWorldPanel(map, ants);
         
         drawPanel.getAnts(ants);
         
