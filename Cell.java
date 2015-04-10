@@ -17,12 +17,22 @@ public class Cell {
     boolean blackAnthill;
     boolean[] redMarkers;
     boolean[] blackMarkers;
+    Ant ant;
 
     public Cell(int hasFood, boolean rocky, boolean[] redMarkers, boolean[] blackMarkers) {
         this.hasFood = hasFood;
         this.rocky = rocky;
         this.redMarkers = redMarkers;
         this.blackMarkers = blackMarkers;
+        ant=null;
+    }
+    
+    public Ant getAnt(){
+        return ant;
+    }
+    
+    public void setAnt(Ant a){
+        ant=a;
     }
 
     public int hasFood() {
