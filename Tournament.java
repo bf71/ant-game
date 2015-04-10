@@ -1,6 +1,9 @@
 
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 /**
  *
@@ -34,17 +37,84 @@ public class Tournament {
         //loadBrains(this.brains);
         //loadMaps(this.maps);
         
-        createMatchups();
-        
         if(noPlayers > 2) {
-            playGames();
+            createMatchups();
+            //displayGames();
+            Thread t = new Thread() {
+                public void run() {
+                    displayGames();
+                }
+            };
+            t.start();
+            
+            final Thread gameThread = new Thread() {
+                public void run() {
+                    for (Game g : roster) {
+                        g.runGame();
+                        gamesPlayed++;
+                        
+                    }
+                }
+            };
+            gameThread.start();
+            
+            Thread checker = new Thread() {
+                public void run() {
+                    while(gamesPlayed < roster.size()) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException ex) {
+                            System.out.println("Haha exception: " + ex);
+                        }
+                    }
+            
+                    System.out.println("Tournament Finished");
+                    TournamentStatsMenu tsm = new TournamentStatsMenu(scores);
+                }
+            };
+            checker.start();
+            
         }
         else {
             create1v1Match();
-            playGames();
+            //displayGames();
+            
+                        Thread t = new Thread() {
+                public void run() {
+                    displayGames();
+                }
+            };
+            t.start();
+            
+            final Thread gameThread = new Thread() {
+                public void run() {
+                    for (Game g : roster) {
+                        g.runGame();
+                        updateScores(g);
+                        gamesPlayed++;
+                        
+                    }
+                }
+            };
+            gameThread.start();
+            
+            Thread checker = new Thread() {
+                public void run() {
+                    while(gamesPlayed < roster.size()) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException ex) {
+                            System.out.println("Haha exception: " + ex);
+                        }
+                    }
+            
+                    System.out.println("Game Finished");
+                    TournamentStatsMenu tsm = new TournamentStatsMenu(scores);
+                }
+            };
+            checker.start();
+            
         }
-        
-        menu = new TournamentStatsMenu(getScores());
         
     }
     /**
@@ -92,6 +162,8 @@ public class Tournament {
      */
     public void create1v1Match(){
         roster.add(new Game(maps.get(0), brains.get(0), brains.get(1)));
+        scores.put(brains.get(0), 0);
+        scores.put(brains.get(1), 0);
     }
 
     /**
@@ -100,18 +172,54 @@ public class Tournament {
      */
     // test comment
     public void playGames() {
-        for (Game g : roster) {
+//        for (Game g : roster) {
             //Load up the GUI and play the game
-            Statistics gameStats = g.runGame();
-            stats.add(gameStats);
-            updateScores(g);
-            gamesPlayed++;
-            GameStatsMenu gsm = new GameStatsMenu(gameStats);
-            boolean buttonPressed = gsm.getBP();
-            while(!buttonPressed) { 
-                buttonPressed = gsm.getBP();
-            }
+            
+            //g.displayMap(g.getMap());
+            //g.runGame();
+            
+//            AntWorldPanel a = new AntWorldPanel(g);
+//            for (int i = 0; i < 100; i++) {
+//                if (i % 10 == 0) {
+//                    a = new AntWorldPanel(g.getMap(), g.getAnts());
+//                }
+//                System.out.println(i);
+//                a.nextTurn();
+//            }
+//            Statistics gameStats = g.getStatistics(); 
+//            stats.add(gameStats);
+//            updateScores(g);
+//            gamesPlayed++;
+//            GameStatsMenu gsm = new GameStatsMenu(gameStats);
+//            boolean buttonPressed = gsm.getBP();
+//            while(!buttonPressed) { 
+//                buttonPressed = gsm.getBP();
+//            }
+//            roster.get(0).runGame();
+//        }
+        for (Game g: roster) {
+            g.runGame();
         }
+    }
+    
+    
+    public void displayGames() {
+        for (int i = roster.size() - 1; i >=0; i--) {
+            Game g = roster.get(i);
+            g.displayMap(g.getMap());
+        }
+
+    }
+    
+    public void labelFrame() {
+        JFrame frame = new JFrame("frames");
+        Container contentPane = frame.getContentPane();
+        JLabel l = new JLabel("this is a lable");
+        contentPane.add(l);
+        frame.setLocationByPlatform(true);
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
     }
     
     public HashMap<AntBrain, Integer> getScores() {
@@ -139,6 +247,8 @@ public class Tournament {
      */
     private void updateScores(Game game){
         Statistics gameStats = game.getStatistics();
+        gameStats.printStats();
+        System.out.println(game.getRedBrain().name);
         if (gameStats.redHillFood>gameStats.blackHillFood){
             scores.put(game.getRedBrain(), scores.get(game.getRedBrain())+2 );
             //addScore(scores, game.getRedBrain(), 2);
